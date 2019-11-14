@@ -243,6 +243,25 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                 Console.WriteLine();
                 Console.WriteLine($"<Age> <AverageAnnualGross> <FirstName> <LastName> <Gender> <Description> <GroceryList> <HireDate>");
                 whatToUpdate = Console.ReadLine().ToLower();
+
+                switch (whatToUpdate)
+                {
+                    case "age":
+                        bool checking2 = true;  
+                        while (checking2) {
+
+                            int _age;
+                            if (int.TryParse(Console.ReadLine(), out _age)) {
+                                character.Age = _age;
+                                checking2 = false;
+                                break;
+                            }
+
+                        }
+                        break;
+                }
+
+
                 if (whatToUpdate == "age" || whatToUpdate == "averageannualgross" || whatToUpdate == "firstname" || whatToUpdate == "lastname" || whatToUpdate == "gender" || whatToUpdate == "description" || whatToUpdate == "grocerylist" || whatToUpdate == "hiredate")
                 {
                     break;
