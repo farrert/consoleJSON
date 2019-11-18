@@ -95,6 +95,7 @@ namespace Demo_NTier_XmlJsonData.BusinessLayer
         {
             _characters.Remove(_characters.FirstOrDefault(c => c.Id == character.Id));
             _characters.Add(character);
+            
         }
 
         /// <summary>

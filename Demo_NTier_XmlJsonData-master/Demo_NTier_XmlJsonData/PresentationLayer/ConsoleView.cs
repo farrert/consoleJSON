@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Demo_NTier_XmlJsonData.BusinessLayer;
+using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 
 /// <summary>
 /// Demo app for XML and Json serialization
@@ -120,7 +122,7 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
 
         static void DisplayAddCharacter()
         {
-                bool checking = true;
+            bool checking = true;
             int id = 0;
             FlintstoneCharacter character = new FlintstoneCharacter();
             DisplayScreenHeader("Add New character");
@@ -222,8 +224,12 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
             DisplayMainMenuPrompt();
         }
 
+        //private string jsonFile = @"Q:\Demo_NTier_XmlJsonData-master\Demo_NTier_XmlJsonData\DataAccessLayer\DataXml";
+        //string xmlFile = @"Q:\Demo_NTier_XmlJsonData-master\Demo_NTier_XmlJsonData\DataAccessLayer\DataXml";
+
         static void DisplayUpdateCharacter()
         {
+
             /*
              * 
              * 
@@ -247,47 +253,63 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                 switch (whatToUpdate)
                 {
                     case "age":
-                        bool checking2 = true;  
-                        while (checking2) {
-
-                            int _age;
-                            if (int.TryParse(Console.ReadLine(), out _age)) {
-                                character.Age = _age;
-                                checking2 = false;
-                                break;
-                            }
-
+                        bool checking2 = true;
+                        while (checking2)
+                        {
+                            Console.WriteLine("what is the new age?");
+                            
+                            character.Age = int.Parse(Console.ReadLine());
+                            checking2 = false;
+                            _fcBusiness.UpdateFlintstoneCharacter(character);
+                            FlintstoneCharacterBusiness.whatToChange(whatToUpdate,character);
+                            break;
                         }
+                        break;
+                    case "description":
+                        {
+                            Console.WriteLine("Gimme ein description!");
+                            character.Description = Console.ReadLine();
+                            FlintstoneCharacterBusiness.whatToChange(whatToUpdate, character);
+                            _fcBusiness.UpdateFlintstoneCharacter(character);
+                            break;
+                        }
+                    //case "averageannualgross":
+                    //    {
+                           
+                    //    }
+
                         break;
                 }
 
+                DisplayMainMenuPrompt();
+                break;
+            }
+            
+        }
 
-                if (whatToUpdate == "age" || whatToUpdate == "averageannualgross" || whatToUpdate == "firstname" || whatToUpdate == "lastname" || whatToUpdate == "gender" || whatToUpdate == "description" || whatToUpdate == "grocerylist" || whatToUpdate == "hiredate")
+        static void DisplayDeleteCharacter()
+        {
+            FlintstoneCharacter character = new FlintstoneCharacter();
+            DisplayScreenHeader("Delete old character");
+            bool checking = true;
+            int id = 0;
+            while (checking)
+            {
+                Console.Clear();
+                Console.WriteLine("Enter the Id of the character that you want to delete");
+                if (int.TryParse(Console.ReadLine(), out id))
                 {
+                    character.Id = id;
                     break;
                 }
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("Please enter one of the listed properties.");
+                    Console.WriteLine("Please enter a valid number for your ID!");
+                    Console.ReadKey();
                 }
-
             }
-            FlintstoneCharacterBusiness.whatToChange(whatToUpdate,character);
-        }
-
-        static void DisplayDeleteCharacter()
-        {
-
-            FlintstoneCharacter character = new FlintstoneCharacter();
-            DisplayScreenHeader("Delete old character");
-
-            Console.WriteLine("Enter the Id of the character that you want to delete");
-            character.Id = int.Parse(Console.ReadLine());
-
-
             _fcBusiness.DeleteFlintstoneCharacter(character);
-
             Console.WriteLine("Whats done is done.");
             DisplayMainMenuPrompt();
         }
@@ -310,7 +332,8 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
             }
             else
             {
-                // process file IO error message
+                Console.WriteLine("Try again");
+                DisplayCharacterDetail();
             }
 
             DisplayMainMenuPrompt();

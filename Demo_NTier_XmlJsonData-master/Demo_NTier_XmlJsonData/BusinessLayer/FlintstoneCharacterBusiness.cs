@@ -115,6 +115,27 @@ namespace Demo_NTier_XmlJsonData.BusinessLayer
                 }
         }
 
+        public void UpdateFlintstoneCharacter(FlintstoneCharacter character)
+        {
+            {
+                FileIoStatus = FileIoMessage.None;
+                using (FlintstoneCharacterRepository fsRepository = new FlintstoneCharacterRepository())
+                    try
+                    {
+
+                        fsRepository.Update(character);
+                        FileIoStatus = FileIoMessage.Complete;
+                        
+
+                    }
+                    catch (Exception)
+                    {
+
+                        FileIoStatus = FileIoMessage.FileAccessError;
+                    }
+            }
+        }
+
         public static void whatToChange(string propertyToChange, FlintstoneCharacter character)
         {
             var d = character;
