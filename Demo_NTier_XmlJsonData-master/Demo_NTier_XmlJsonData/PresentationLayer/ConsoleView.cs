@@ -84,7 +84,7 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                     case 'A':
                         DisplayAllCharacters();
                         break;
-                        
+
                     case 'b':
                     case 'B':
                         DisplayCharacterDetail();
@@ -125,22 +125,39 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
             bool checking = true;
             int id = 0;
             FlintstoneCharacter character = new FlintstoneCharacter();
+            List<GroceryItem> list = new List<GroceryItem>();
+            character.GroceryList = list;
+           
             DisplayScreenHeader("Add New character");
-              
+
             while (checking)
             {
                 Console.Clear();
                 Console.WriteLine("ID?");
-                if (int.TryParse(Console.ReadLine(), out id))
+                bool found = false;
+
+                if (int.TryParse(Console.ReadLine(), out id)) {
+                //    character.Id = id;
+                foreach (FlintstoneCharacter character1 in _fcBusiness.AllFlintstoneCharacters())
                 {
-                    character.Id = id; 
-                    break;
+                    if (id == character1.Id)
+                    {
+                     
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Please enter a valid unused number for your ID!");
+                    Console.ReadKey();
                 }
                 else
                 {
-                    Console.Clear();
-                    Console.WriteLine("Please enter a valid number for your ID!");
-                    Console.ReadKey();
+                        character.Id = id;
+                        break;
+                }
                 }
             }
 
@@ -148,15 +165,15 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
             character.FirstName = Console.ReadLine();
             Console.Write("Last Name?");
             character.LastName = Console.ReadLine();
-            
+
             int age = 0;
             while (checking)
             {
                 Console.Clear();
                 Console.WriteLine("Age?");
-                if (int.TryParse(Console.ReadLine(),out age))
+                if (int.TryParse(Console.ReadLine(), out age))
                 {
-                    character.Age = age; 
+                    character.Age = age;
                     break;
                 }
                 else
@@ -166,28 +183,24 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                     Console.ReadKey();
                 }
             }
-
-
-             
-            FlintstoneCharacter.GenderType gender; 
+            FlintstoneCharacter.GenderType gender;
             while (checking)
-            { 
+            {
                 Console.WriteLine("Gender? <Male> OR <Female>");
                 if (Enum.TryParse(Console.ReadLine(), out gender))
                 {
                     if (gender == FlintstoneCharacter.GenderType.Female || gender == FlintstoneCharacter.GenderType.Male)
                     {
-                    character.Gender = gender;
-                    break; 
+                        character.Gender = gender;
+                        break;
                     }
                 }
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("Please enter a valid gender <Male> : <Female>!"); 
+                    Console.WriteLine("Please enter a valid gender <Male> : <Female>!");
                 }
             }
-
             int gross = 0;
             while (checking)
             {
@@ -205,7 +218,6 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                     Console.ReadKey();
                 }
             }
-
             Console.Clear();
             Console.WriteLine("Gimme a description!");
             character.Description = Console.ReadLine();
@@ -220,7 +232,46 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
             {
                 Console.WriteLine("Something went wrong");
             }
+            Console.Clear();
+            bool finished = false;
+            while(!finished)
+            {
+                Console.WriteLine("Would you like to add an item to your grocerylist?  yes/no");
+                string answer = Console.ReadLine().ToLower();
+                if (answer == "yes" || answer == "y")
+                {
+                    //Run adding to grocery list
 
+                    string name = "";
+                    Console.Clear();
+                    Console.WriteLine("Please enter in the name of your new item.");
+                    name = Console.ReadLine();
+                    int quant = 1;
+                    bool quantloop = true;
+                    while (quantloop)
+                    {
+                        Console.WriteLine("Please enter the quantity of your new item.");
+                        if (int.TryParse(Console.ReadLine(), out quant))
+                        {
+                            GroceryItem item = new GroceryItem();
+                            item.Name = name;
+                            item.Quantity = quant;
+                            character.GroceryList.Add(item);
+                            break;
+                        }
+                    }
+
+
+                }
+                else if (answer == "no" || answer == "n")
+                {
+                    //Break out of this loop
+                    break;
+
+                }
+
+
+            }
             DisplayMainMenuPrompt();
         }
 
@@ -257,11 +308,11 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                         while (checking2)
                         {
                             Console.WriteLine("what is the new age?");
-                            
+
                             character.Age = int.Parse(Console.ReadLine());
                             checking2 = false;
                             _fcBusiness.UpdateFlintstoneCharacter(character);
-                            FlintstoneCharacterBusiness.whatToChange(whatToUpdate,character);
+                            FlintstoneCharacterBusiness.whatToChange(whatToUpdate, character);
                             break;
                         }
                         break;
@@ -273,10 +324,10 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                             _fcBusiness.UpdateFlintstoneCharacter(character);
                             break;
                         }
-                    //case "averageannualgross":
-                    //    {
-                           
-                    //    }
+                        //case "averageannualgross":
+                        //    {
+
+                        //    }
 
                         break;
                 }
@@ -284,7 +335,7 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
                 DisplayMainMenuPrompt();
                 break;
             }
-            
+
         }
 
         static void DisplayDeleteCharacter()
@@ -297,10 +348,16 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
             {
                 Console.Clear();
                 Console.WriteLine("Enter the Id of the character that you want to delete");
-                if (int.TryParse(Console.ReadLine(), out id))
+                if (int.TryParse(Console.ReadLine(), out id) && id == character.Id)
                 {
                     character.Id = id;
                     break;
+                }
+                else if (id != character.Id)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Nothing is here");
+                    Console.ReadKey();
                 }
                 else
                 {
@@ -403,9 +460,20 @@ namespace Demo_NTier_XmlJsonData.PresentationLayer
             Console.WriteLine($"Gender: {character.Gender}");
             Console.WriteLine($"Average Annual Gross: {character.AverageAnnualGross:c}");
             Console.WriteLine($"Description: \n{character.Description}");
+            Console.WriteLine($"Grocery List: \n");
+            if (character.GroceryList != null) {
+                for (int i = 0; i < character.GroceryList.Count; i++)
+                {
+                    Console.WriteLine($"Item Name: {character.GroceryList[i].Name} Quantity {character.GroceryList[i].Quantity}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{character.FirstName} does not have a grocery list!");
+                List<GroceryItem> list1 = new List<GroceryItem>();
+                character.GroceryList = list1;
+            }
         }
-
-
         /// <summary>
         /// display a table of all characters: first name, last name, and id
         /// </summary>
